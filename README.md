@@ -10,7 +10,7 @@ Native `/login` · CLI proxy route · higher Build limits
 
 [![Oh My Pi](https://img.shields.io/badge/Oh%20My%20Pi-extension-7c3aed?style=for-the-badge)](https://github.com/can1357/oh-my-pi)
 [![License: MIT](https://img.shields.io/badge/License-MIT-22c55e?style=for-the-badge)](./LICENSE)
-[![GitHub](https://img.shields.io/badge/GitHub-ART1KZ%2Fomp--grok--build-111827?style=for-the-badge&logo=github)](https://github.com/ART1KZ/omp-grok-build)
+[![GitHub](https://img.shields.io/badge/GitHub-nguyenthdat%2Fomp--grok--build-111827?style=for-the-badge&logo=github)](https://github.com/nguyenthdat/omp-grok-build)
 
 <br/>
 
@@ -55,7 +55,7 @@ So you keep coding in omp while using **Grok Build limits** instead of burning t
 | Provider | `xai-oauth` | `grok-build` |
 | Endpoint | `https://api.x.ai/v1` | `https://cli-chat-proxy.grok.com/v1` |
 | Typical limit impact | weekly SuperGrok quota like API | Grok Build CLI limits |
-| Example | `xai-oauth/grok-4.5` | `grok-build/grok-4.5` |
+| Example | `xai-oauth/grok-4.7` | `grok-build/grok-4.7` |
 
 > `xai-oauth/grok-build` is still the SuperGrok API path.  
 > A similar model name does not switch you onto Grok Build limits.
@@ -65,7 +65,7 @@ So you keep coding in omp while using **Grok Build limits** instead of burning t
 ## Install
 
 ```bash
-omp plugin install github:ART1KZ/omp-grok-build
+omp plugin install github:nguyenthdat/omp-grok-build
 ```
 
 <details>
@@ -74,7 +74,7 @@ omp plugin install github:ART1KZ/omp-grok-build
 **Local clone**
 
 ```bash
-git clone https://github.com/ART1KZ/omp-grok-build.git
+git clone https://github.com/nguyenthdat/omp-grok-build.git
 omp plugin link ./omp-grok-build
 ```
 
@@ -98,14 +98,14 @@ Marketplace installs do not load extension modules. Use `omp plugin install`, `o
 /login
 → Grok Build (CLI proxy)
 
-/model grok-build/grok-4.5
+/model grok-build/grok-4.7
 ```
 
 | Action | Command |
 |---|---|
 | Sign in | `/login` → **Grok Build (CLI proxy)** |
 | Sign out | `/logout` → **Grok Build** |
-| Choose model | `/model grok-build/grok-4.5` |
+| Choose model | `/model grok-build/grok-4.7` |
 | Quota | `/usage` (Grok Build section) |
 | Help | `/grok-build-help` |
 | Refresh model list | `omp models refresh` |
@@ -122,9 +122,9 @@ disabledProviders:
 modelProviderOrder:
   - grok-build
 modelRoles:
-  default: grok-build/grok-4.5
-  plan: grok-build/grok-4.5
-  slow: grok-build/grok-4.5
+  default: grok-build/grok-4.7
+  plan: grok-build/grok-4.7
+  slow: grok-build/grok-4.7
 ```
 
 No hand-written `models.yml` is required. The extension registers the provider, models, headers, and login flow itself.
@@ -161,14 +161,23 @@ Seeing a **GrokBuild %** line under SuperGrok usage is not the same as chat alre
 
 ## Model catalog
 
+Offline seed matches a signed-in Grok CLI 1.0.70 account (`GET /v1/models` on 2026-10-28). Each model is registered at its largest advertised context window (500k) and sends `x-grok-context-window`.
+
+| Model | Selector | Context | Reasoning effort |
+|---|---|---|---|
+| Grok 4.7 | `grok-build/grok-4.7` | 500k | low, medium, high, xhigh |
+| Grok 4.7 Fast | `grok-build/grok-4.7-build-fast` | 500k | low, medium, high, xhigh |
+| Grok 4.6 | `grok-build/grok-4.6` | 500k | low, medium, high, xhigh |
+| Grok 4.5 | `grok-build/grok-4.5` | 500k | low, medium, high |
+
 | State | Source |
 |---|---|
-| Signed out | static seed |
-| Signed in | live `GET /v1/models` + curated metadata |
+| Signed out | static seed above |
+| Signed in | live `GET /v1/models` replaces the seed |
 | Later sessions | omp cache (~24h) |
 | Force update | `omp models refresh` |
 
-The list is not permanent after first login. It refreshes on cache expiry or manual refresh, and can change with account tier.
+After login the list follows the account. New models the proxy adds show up on the next refresh. Cost stays zero because this path uses Grok Build limits.
 
 ---
 
@@ -195,7 +204,7 @@ Interactive `/login` shows the provider after the extension loads. Headless `omp
 ## Multi-machine
 
 ```bash
-omp plugin install github:ART1KZ/omp-grok-build
+omp plugin install github:nguyenthdat/omp-grok-build
 omp
 ```
 
@@ -203,7 +212,7 @@ Then:
 
 ```text
 /login → Grok Build (CLI proxy)
-/model grok-build/grok-4.5
+/model grok-build/grok-4.7
 ```
 
 ---
@@ -211,7 +220,7 @@ Then:
 ## Uninstall
 
 ```bash
-omp plugin uninstall omp-grok-build
+omp plugin uninstall @nguyenthdat/omp-grok-build
 ```
 
 Optionally `/logout` and remove stored `grok-build` credentials.

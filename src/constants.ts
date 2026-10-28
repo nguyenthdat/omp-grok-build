@@ -11,8 +11,11 @@ export const GROK_BUILD_API = "grok-build-cli";
 /** Official Grok Build CLI chat proxy. */
 export const GROK_BUILD_BASE_URL = "https://cli-chat-proxy.grok.com/v1";
 
-/** Pin near current official grok CLI (9router HAR / local install 0.2.101). */
-export const GROK_CLI_VERSION = "0.2.101";
+/**
+ * Pin to the current stable grok CLI (`https://x.ai/cli/stable`).
+ * cli-chat-proxy rejects older clients with HTTP 426 (floor is 1.0.13+).
+ */
+export const GROK_CLI_VERSION = "1.0.70";
 
 /**
  * Static fingerprint headers from official grok-shell traffic

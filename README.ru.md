@@ -10,7 +10,7 @@
 
 [![Oh My Pi](https://img.shields.io/badge/Oh%20My%20Pi-extension-7c3aed?style=for-the-badge)](https://github.com/can1357/oh-my-pi)
 [![License: MIT](https://img.shields.io/badge/License-MIT-22c55e?style=for-the-badge)](./LICENSE)
-[![GitHub](https://img.shields.io/badge/GitHub-ART1KZ%2Fomp--grok--build-111827?style=for-the-badge&logo=github)](https://github.com/ART1KZ/omp-grok-build)
+[![GitHub](https://img.shields.io/badge/GitHub-nguyenthdat%2Fomp--grok--build-111827?style=for-the-badge&logo=github)](https://github.com/nguyenthdat/omp-grok-build)
 
 <br/>
 
@@ -55,7 +55,7 @@ Grok Build CLI использует другой route и другие лими�
 | Provider | `xai-oauth` | `grok-build` |
 | Endpoint | `https://api.x.ai/v1` | `https://cli-chat-proxy.grok.com/v1` |
 | Лимиты | недельная квота SuperGrok как API | лимиты Grok Build CLI |
-| Пример | `xai-oauth/grok-4.5` | `grok-build/grok-4.5` |
+| Пример | `xai-oauth/grok-4.7` | `grok-build/grok-4.7` |
 
 > `xai-oauth/grok-build` — это всё ещё SuperGrok API path.  
 > Похожее имя модели не переключает вас на лимиты Grok Build.
@@ -65,7 +65,7 @@ Grok Build CLI использует другой route и другие лими�
 ## Установка
 
 ```bash
-omp plugin install github:ART1KZ/omp-grok-build
+omp plugin install github:nguyenthdat/omp-grok-build
 ```
 
 <details>
@@ -74,7 +74,7 @@ omp plugin install github:ART1KZ/omp-grok-build
 **Локальный clone**
 
 ```bash
-git clone https://github.com/ART1KZ/omp-grok-build.git
+git clone https://github.com/nguyenthdat/omp-grok-build.git
 omp plugin link ./omp-grok-build
 ```
 
@@ -98,14 +98,14 @@ Marketplace install не загружает extension modules. Нужны `omp p
 /login
 → Grok Build (CLI proxy)
 
-/model grok-build/grok-4.5
+/model grok-build/grok-4.7
 ```
 
 | Действие | Команда |
 |---|---|
 | Войти | `/login` → **Grok Build (CLI proxy)** |
 | Выйти | `/logout` → **Grok Build** |
-| Выбрать модель | `/model grok-build/grok-4.5` |
+| Выбрать модель | `/model grok-build/grok-4.7` |
 | Справка | `/grok-build-help` |
 | Обновить список моделей | `omp models refresh` |
 
@@ -120,9 +120,9 @@ disabledProviders:
 modelProviderOrder:
   - grok-build
 modelRoles:
-  default: grok-build/grok-4.5
-  plan: grok-build/grok-4.5
-  slow: grok-build/grok-4.5
+  default: grok-build/grok-4.7
+  plan: grok-build/grok-4.7
+  slow: grok-build/grok-4.7
 ```
 
 Ручной `models.yml` не нужен. Extension сам регистрирует provider, models, headers и login flow.
@@ -157,14 +157,23 @@ modelRoles:
 
 ## Каталог моделей
 
+Офлайн-seed совпадает с аккаунтом Grok CLI 1.0.70 (`GET /v1/models`, 2026-10-28). Каждая модель регистрируется на максимальном окне (500k) и шлёт `x-grok-context-window`.
+
+| Модель | Селектор | Контекст | Reasoning effort |
+|---|---|---|---|
+| Grok 4.7 | `grok-build/grok-4.7` | 500k | low, medium, high, xhigh |
+| Grok 4.7 Fast | `grok-build/grok-4.7-build-fast` | 500k | low, medium, high, xhigh |
+| Grok 4.6 | `grok-build/grok-4.6` | 500k | low, medium, high, xhigh |
+| Grok 4.5 | `grok-build/grok-4.5` | 500k | low, medium, high |
+
 | Состояние | Источник |
 |---|---|
-| Без login | static seed |
-| После login | live `GET /v1/models` + curated metadata |
+| Без login | static seed выше |
+| После login | live `GET /v1/models` заменяет seed |
 | Следующие сессии | cache omp (~24h) |
 | Принудительное обновление | `omp models refresh` |
 
-Список не фиксируется навсегда после первого входа. Он обновляется по TTL cache или вручную и может зависеть от tier аккаунта.
+После входа список следует за аккаунтом. Новые модели прокси появляются на следующем refresh. Стоимость нулевая: этот путь использует лимиты Grok Build.
 
 ---
 
@@ -191,7 +200,7 @@ modelRoles:
 ## Несколько машин
 
 ```bash
-omp plugin install github:ART1KZ/omp-grok-build
+omp plugin install github:nguyenthdat/omp-grok-build
 omp
 ```
 
@@ -199,7 +208,7 @@ omp
 
 ```text
 /login → Grok Build (CLI proxy)
-/model grok-build/grok-4.5
+/model grok-build/grok-4.7
 ```
 
 ---
@@ -207,7 +216,7 @@ omp
 ## Удаление
 
 ```bash
-omp plugin uninstall omp-grok-build
+omp plugin uninstall @nguyenthdat/omp-grok-build
 ```
 
 При желании: `/logout` и удаление credentials `grok-build`.
